@@ -1,0 +1,11 @@
+syntax="proto3";
+
+
+option go_package = "github.com/NikoMalik/adus/transport/tcp";
+
+
+
+message Config {
+	reserved 1;
+	bool acceptProxy = 2;
+}

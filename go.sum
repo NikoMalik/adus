@@ -1,2 +1,4 @@
+github.com/NikoMalik/low-level-functions v0.0.0-20240901193851-bacb16a60764 h1:kkP/EtGX2h22dPqF3spK7fh4C7sIARXVljpfebp3VF8=
+github.com/NikoMalik/low-level-functions v0.0.0-20240901193851-bacb16a60764/go.mod h1:Ta81ZEQvW9ECJiqMLQt99HJiTVzurWeXfVlU9LOeHHg=
 golang.org/x/crypto v0.27.0 h1:GXm2NjJrPaiv/h1tb2UH8QfgC/hOf/+z0p6PT8o1w7A=
 golang.org/x/crypto v0.27.0/go.mod h1:1Xngt8kV6Dvbssa53Ziq6Eqn0HqbZi5Z6R0ZpwQzt70=

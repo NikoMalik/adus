@@ -8,4 +8,10 @@ const (
 	AdusKeyContext AdusKey = iota
 )
 
-func FromContext(ctx context.Context)
+func FromContext(ctx context.Context) *Instance {
+	if s, ok := ctx.Value(AdusKeyContext).(*Instance); ok {
+		return s
+	}
+
+	return nil
+}
