@@ -19,7 +19,7 @@ func createAllocFunc(size int) func() interface{} {
 
 var (
 	pool     [numPools]*sync.Pool
-	poolSize [numPools]int
+	poolSize [numPools]int //An array of pool sizes. These sizes will correspond to the number of bytes each pool will manage
 )
 
 func Init() {
@@ -57,6 +57,12 @@ func GetPool(size int) *sync.Pool {
 	// If no sync.Pool can be used to allocate a byte slice of the given
 	// size, return nil.
 	return nil
+
+	/*
+		Returns a pool that can be used to allocate a byte slice of the given size.
+		If the pool is not initialized, it is called to initialize it. If there is no suitable pool, returns nil.
+
+	*/
 }
 
 // Allocate returns a byte slice of the given size. If the size is larger
@@ -82,6 +88,14 @@ func Allocate(size int) []byte {
 	// If no sync.Pool can be used to allocate a byte slice of the given size,
 	// allocate a new byte slice using the make function.
 	return lowlevelfunctions.MakeNoZero(size)
+
+	/*
+		Allocates a byte slice of the desired size. First tries to get a slice from the pool. If the slice from the pool is greater than or equal to the desired size,
+		returns a slice of the desired size.
+		If the slice is smaller than the desired size, returns a full slice. If there is no suitable pool, allocates memory using the function
+
+
+	*/
 }
 
 func Free(buf []byte) {
@@ -94,4 +108,10 @@ func Free(buf []byte) {
 			return
 		}
 	}
+
+	/*
+		Returns the byte slice back to the pool.
+		Trims the slice to its capacity and places it in a suitable pool. If the slice size does not match the pools size, the slice is not placed back into the pool.
+
+	*/
 }

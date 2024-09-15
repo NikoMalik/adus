@@ -4,3 +4,8 @@ build:
 
 run: build
 	@./bin/adus
+
+
+
+test:
+	@go test -v ./...
