@@ -100,3 +100,74 @@ func TestPoolUsage(t *testing.T) {
 		t.Errorf("Expected buffer of at least size %d, got %d", size, len(buf))
 	}
 }
+
+func TestAllocate(t *testing.T) {
+	Init()
+
+	tests := [5]struct {
+		name     string
+		size     int
+		expected int
+	}{
+		{"small size", 100, 2048},
+		{"medium size", 2048, 2048},
+		{"large size", 8192, 8192},
+		{"extra large size", 16384, 16384},
+		{"too large", 20000, 20000},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			buf := Allocate(tt.size)
+			if len(buf) != tt.size {
+				t.Errorf("expected buffer of size %d, got %d", tt.size, len(buf))
+			}
+			if cap(buf) < tt.expected {
+				t.Errorf("expected buffer capacity to be at least %d, got %d", tt.expected, cap(buf))
+			}
+		})
+	}
+}
+
+func TestFree(t *testing.T) {
+	Init()
+
+	size := 2048
+	buf := Allocate(size)
+	if len(buf) != size {
+		t.Errorf("expected buffer of size %d, got %d", size, len(buf))
+	}
+
+	// Check the buffer's capacity before freeing it
+	if cap(buf) != 2048 {
+		t.Errorf("expected buffer capacity to be %d, got %d", 2048, cap(buf))
+	}
+
+	Free(buf)
+
+	// Allocate again and ensure the buffer was returned to the pool
+	newBuf := Allocate(size)
+	if cap(newBuf) < 2048 {
+		t.Errorf("expected buffer capacity to be at least %d, got %d", 2048, cap(newBuf))
+	}
+}
+
+func TestAllocateAndFreeCycle(t *testing.T) {
+	Init()
+
+	sizes := [3]int{100, 2048, 8192}
+	for _, size := range sizes {
+		buf := Allocate(size)
+		if len(buf) != size {
+			t.Errorf("expected buffer of size %d, got %d", size, len(buf))
+		}
+
+		Free(buf)
+
+		// Re-allocate and ensure buffer is reused
+		newBuf := Allocate(size)
+		if cap(newBuf) < size {
+			t.Errorf("expected buffer capacity to be at least %d, got %d", size, cap(newBuf))
+		}
+	}
+}

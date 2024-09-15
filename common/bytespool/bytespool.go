@@ -81,11 +81,12 @@ func Allocate(size int) []byte {
 	}
 	// If no sync.Pool can be used to allocate a byte slice of the given size,
 	// allocate a new byte slice using the make function.
-	return make([]byte, size)
+	return lowlevelfunctions.MakeNoZero(size)
 }
 
 func Free(buf []byte) {
-	buf = buf[0:cap(buf)]
+	size := cap(buf)
+	buf = buf[0:size]
 	for idx := range poolSize {
 		if len(buf) == poolSize[idx] {
 
