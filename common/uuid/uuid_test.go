@@ -133,3 +133,46 @@ func TestUUIDStringConversion(t *testing.T) {
 	fmt.Printf("Original UUID: %s\n", originalUUID.String())
 	fmt.Printf("Parsed UUID: %s\n", uuid.String())
 }
+
+func TestParseBytes(t *testing.T) {
+
+	bytes := [16]byte{0x24, 0x18, 0xd0, 0x87, 0x64, 0x8d, 0x49, 0x90, 0x86, 0xe8, 0x19, 0xdc, 0xa1, 0xd0, 0x06, 0xd3}
+
+	uuid, err := ParseBytes(bytes[:])
+
+	if err != nil {
+		t.Fatalf("Failed to parse UUID from bytes: %v", err)
+	}
+
+	if !uuid.Equals(&UUID{0x24, 0x18, 0xd0, 0x87, 0x64, 0x8d, 0x49, 0x90, 0x86, 0xe8, 0x19, 0xdc, 0xa1, 0xd0, 0x06, 0xd3}) {
+		t.Errorf("Parsed UUID does not match original UUID")
+	}
+
+	_, err = ParseBytes([]byte{1, 3, 2, 4})
+	if err == nil {
+		t.Fatal("Expect error but nil")
+	}
+}
+
+func TestRandom(t *testing.T) {
+	uuid := New()
+	uuid2 := New()
+
+	if uuid.String() == uuid2.String() {
+		t.Error("duplicated uuid")
+	}
+}
+
+func TestEquals(t *testing.T) {
+	var uuid *UUID
+	var uuid2 *UUID
+
+	if !uuid.Equals(uuid2) {
+		t.Error("empty uuid should equal")
+	}
+
+	uuid3 := New()
+	if uuid.Equals(uuid3) {
+		t.Error("nil uuid equals non-nil uuid")
+	}
+}

@@ -31,9 +31,10 @@ func (u *UUID) Bytes() []byte {
 // Equals returns true if this UUID equals another UUID by value.
 // Equals returns true if this UUID equals another UUID by value.
 func (u *UUID) Equals(another *UUID) bool {
-	return u != nil &&
-		another != nil &&
-		lowlevelfunctions.Equal(u[:], another[:])
+	if u == nil || another == nil {
+		return u == another
+	}
+	return lowlevelfunctions.Equal(u[:], another[:])
 }
 
 // New creates a UUID with random value.
